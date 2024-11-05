@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.DRS_Project.Model.User;
 
 @RestController
-public class MainController {
+public class UserController {
     @Autowired
     User_Repo user_repo;
 
