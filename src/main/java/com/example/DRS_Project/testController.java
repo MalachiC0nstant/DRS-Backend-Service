@@ -14,7 +14,8 @@ public class testController {
     }
     @GetMapping("/private")
     public String privatePage(Authentication authentication) {
-
+        // Without injection of Authentication
+        // var authentication = SecurityContextHolder.getContext().getAuthentication();
         return "Welcome to the private page ~[ " + getName(authentication) + " ]~";
     }
     private static String getName(Authentication authentication) {
