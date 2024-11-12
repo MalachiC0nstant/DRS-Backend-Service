@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,11 +30,13 @@ public class SecurityConfig {
             HttpSecurity http,
             AuthenticationEventPublisher publisher
     ) throws Exception {
+
         http.getSharedObject(AuthenticationManagerBuilder.class).authenticationEventPublisher(publisher); // Can supposedly ignore this?
 
-        var authManager = new ProviderManager(new RobotAuthenticationProvider(List.of("beep-boop", "boop-beep")));
-        authManager.setAuthenticationEventPublisher(publisher);
 
+        var configurer = new RobotLoginConfigurer()
+                .password("beep-boop")
+                .password("boop-beap");
         return http
                 .authorizeHttpRequests(authorizeConfig -> {
                     authorizeConfig.requestMatchers("/").permitAll();
@@ -41,8 +45,20 @@ public class SecurityConfig {
                     authorizeConfig.anyRequest().authenticated();
                 })
                 .formLogin(withDefaults())
-                .oauth2Login(withDefaults())
-                .addFilterBefore(new RobotFilter(authManager), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(withDefaults())
+                .oauth2Login(
+                        oauth2Configurer -> {
+                            oauth2Configurer.withObjectPostProcessor(
+                                    new ObjectPostProcessor<AuthenticationProvider>() {
+                                        @Override
+                                        public <T extends AuthenticationProvider> T postProcess(T object) {
+                                            return (T) new RateLimitedAuthenticationProvider(object);
+                                        }
+                                    }
+                            );
+                        }
+                )
+                .apply(configurer).and() // or just create the new RobotLoginConfigurer here and set the passwords
                 .authenticationProvider(new drsAuthenticationProvider())
                 .build();
     }
