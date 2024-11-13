@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class User {
     @Id
-    private Integer user_id;
-    private String first_name;
-    private String last_name;
+    private Integer userId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
 }

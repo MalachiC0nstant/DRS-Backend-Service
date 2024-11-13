@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -38,8 +39,11 @@ public class SecurityConfig {
                 .password("beep-boop")
                 .password("boop-beap");
         return http
+                .csrf().disable() // TODO: Get rid of this soon
                 .authorizeHttpRequests(authorizeConfig -> {
                     authorizeConfig.requestMatchers("/").permitAll();
+                    authorizeConfig.requestMatchers("/register").permitAll(); // TODO: Get rid of this soon
+                    authorizeConfig.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); // TODO: fix this too
                     authorizeConfig.requestMatchers("error").permitAll();
                     authorizeConfig.requestMatchers("favicon.ico").permitAll();
                     authorizeConfig.anyRequest().authenticated();
