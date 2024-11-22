@@ -1,25 +1,24 @@
 package com.example.DRS_Project.Controller;
 
-import com.example.DRS_Project.Repository.User_Repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.DRS_Project.Model.User;
 import com.example.DRS_Project.Model.LoginRequest;
-import com.example.DRS_Project.Services.UserCredentialsService;
+import com.example.DRS_Project.Services.UserCredentials_Service;
 import jakarta.servlet.http.HttpSession;
-import java.security.Principal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
-public class UserController {
+@RequestMapping("/api/user")
+public class User_Controller {
 
-    private static final String HOME_VIEW_COUNT = "HOME_VIEW_COUNT";
-    private final UserCredentialsService userCredentialsService;
+   // private static final String HOME_VIEW_COUNT = "HOME_VIEW_COUNT";
+    private final UserCredentials_Service userCredentialsService;
 
     @Autowired
-    public UserController(UserCredentialsService userCredentialsService) {
+    public User_Controller(UserCredentials_Service userCredentialsService) {
         this.userCredentialsService = userCredentialsService;
     }
 
@@ -27,6 +26,7 @@ public class UserController {
     public String registerUser(@RequestBody User user) {
         return userCredentialsService.registerUser(user);
     }
+
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
         boolean isAuthenticated = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
@@ -46,11 +46,7 @@ public class UserController {
 
     @PostMapping("/logoutUser")
     public String logoutUser(HttpSession session) {
-        String sessionIdBefore = session.getId();
-        session.invalidate();
-        String sessionIdAfter = session.getId();
-        System.out.println("Session before: " + sessionIdBefore);
-        System.out.println("Session after invalidate: " + sessionIdAfter);  // Should be null or invalid.
+        session.invalidate(); //Useless for now
         return "Logout successful.";
     }
 

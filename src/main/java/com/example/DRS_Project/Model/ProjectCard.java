@@ -5,17 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.Map;
 
-@Document
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Climbing_Object {
+@Document("projects")
+public class ProjectCard {
     @Id
-    private Integer object_id;
-    private String object_name;
-    private String image_url; // Unsure about this for now
-    private Map<String, Object> threejs_data;
-    private String type; // crimp, jug, sloper, volume, wall
+    private String id;
+    private String name;
+    private String snapshotUrl;
+    private Date dateModified;
+    private Date dateCreated;
+
+    private int numberOfHolds;
+
+
 }
+

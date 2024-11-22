@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserCredentialsService {
+public class UserCredentials_Service {
 
     @Autowired
     private User_Repo userRepository;

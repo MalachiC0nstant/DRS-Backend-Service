@@ -32,7 +32,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/register", "/login", "/isAuthenticated").permitAll()
+                                .requestMatchers(
+                                        "/api/user/register",
+                                        "/api/user/login",
+                                        "/api/user/isAuthenticated",
+                                        "/api/projectcard/create",
+                                        "/api/projectcard/projects"
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf().disable() //
