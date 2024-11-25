@@ -2,9 +2,12 @@ package com.example.DRS_Project.Services;
 
 import com.example.DRS_Project.Model.User;
 import com.example.DRS_Project.Repository.User_Repo;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserCredentials_Service {
@@ -24,12 +27,15 @@ public class UserCredentials_Service {
         return "Registration successful.";
     }
 
-    public boolean loginUser(String email, String password) {
+    public Optional<String> loginUser(String email, String password, HttpSession session) {
         User user = userRepository.findByEmail(email);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            return true;
+            session.setAttribute("email", email);
+            session.setAttribute("userId", user.getUserId());
+            return Optional.of("Login successful");
+        } else {
+            return Optional.empty();
         }
-        return false;
     }
 
     private String hashPassword(String password) {

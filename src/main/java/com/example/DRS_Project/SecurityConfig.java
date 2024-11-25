@@ -37,7 +37,9 @@ public class SecurityConfig {
                                         "/api/user/login",
                                         "/api/user/isAuthenticated",
                                         "/api/projectcard/create",
-                                        "/api/projectcard/projects"
+                                        "/api/projectcard/projects",
+                                        "/api/projectcard/delete/{id}",
+                                        "/api/projectcard/duplicate/{id}"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

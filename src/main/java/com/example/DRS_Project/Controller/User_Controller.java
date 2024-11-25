@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/user")
@@ -27,15 +29,26 @@ public class User_Controller {
         return userCredentialsService.registerUser(user);
     }
 
+//    @PostMapping("/login")
+//    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
+//        boolean isAuthenticated = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+//
+//        if (isAuthenticated) {
+//            session.setAttribute("email", loginRequest.getEmail());
+//            return ResponseEntity.ok("Login successful. Session ID: " + session.getId()); // Maybe bad habit?
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login failed. Invalid email or password."); // Maybe bad habit?
+//        }
+//    }
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        boolean isAuthenticated = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+        Optional<String> result = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword(), session);
 
-        if (isAuthenticated) {
-            session.setAttribute("email", loginRequest.getEmail());
-            return ResponseEntity.ok("Login successful. Session ID: " + session.getId()); // Maybe bad habit?
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login failed. Invalid email or password."); // Maybe bad habit?
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Login failed. Invalid email or password.");
         }
     }
 
