@@ -1,5 +1,6 @@
 package com.example.DRS_Project.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.DRS_Project.Model.User;
@@ -40,9 +41,9 @@ public class User_Controller {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login failed. Invalid email or password."); // Maybe bad habit?
 //        }
 //    }
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        Optional<String> result = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword(), session);
+    @PostMapping("/loginUser")
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session, HttpServletRequest request) {
+        Optional<String> result = userCredentialsService.loginUser(loginRequest.getEmail(), loginRequest.getPassword(), session, request);
 
         if (result.isPresent()) {
             return ResponseEntity.ok(result.get());

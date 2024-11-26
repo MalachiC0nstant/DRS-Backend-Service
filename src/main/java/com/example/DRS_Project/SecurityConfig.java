@@ -29,24 +29,22 @@ public class SecurityConfig {
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 
         return http
+                .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
                                         "/api/user/register",
-                                        "/api/user/login",
-                                        "/api/user/isAuthenticated",
-                                        "/api/projectcard/create",
-                                        "/api/projectcard/projects",
-                                        "/api/projectcard/delete/{id}",
-                                        "/api/projectcard/duplicate/{id}"
+                                        "/api/user/loginUser",
+                                        "/api/user/isAuthenticated"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .csrf().disable() //
                 .sessionManagement(sessionManagement ->
                         sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                                .sessionFixation().migrateSession()
+                                //.maximumSessions(1)
                 )
                 .logout(logout ->
                         logout
